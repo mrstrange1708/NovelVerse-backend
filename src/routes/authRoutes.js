@@ -1,9 +1,11 @@
-const { Router } = require("express");
-const authController = require("../controller/authController.js");
+const express = require("express");
+const router = express.Router();
+const authController = require("../controller/authController");
+const googleAuthRoutes = require("../services/authGoogleService");
 
-const router = Router();
-
+// Regular auth routes
 router.post("/register", authController.register);
 router.post("/login", authController.login);
+router.use("/google", googleAuthRoutes);
 
 module.exports = router;
