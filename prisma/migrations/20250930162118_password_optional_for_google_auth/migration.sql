@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `User` MODIFY `booksRead` INTEGER NULL DEFAULT 0;

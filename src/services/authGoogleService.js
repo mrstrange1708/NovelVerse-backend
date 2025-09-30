@@ -3,7 +3,8 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
-const { prisma } = require("../config/db");
+const { PrismaClient } = require("../generated/prisma");
+const prisma = new PrismaClient();
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -43,7 +44,7 @@ router.get("/callback", async (req, res) => {
       return res.status(400).send("Failed to fetch user info from Google");
     }
 
-    const user = await prisma.user.upsert({
+    const user = await prisma.User.upsert({
       where: { email: data.email },
       update: { firstName: data.given_name, lastName: data.family_name },
       create: {
