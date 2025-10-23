@@ -15,10 +15,20 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
+  id        String   @id @default(uuid())
   firstName String
   lastName  String?
-  email     String  @unique
+  email     String   @unique
   password  String?
-  booksRead Int    @default(0)
+  booksRead Int      @default(0)
+  readBooks Books[]  @relation("UserBooks")
+}
+
+model Books {
+  id          String   @id @default(uuid())
+  title       String
+  author      String
+  description String?
+  publishedAt DateTime?
+  readers     User[]   @relation("UserBooks")
 }
