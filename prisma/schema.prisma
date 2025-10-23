@@ -22,13 +22,26 @@ model User {
   password  String?
   booksRead Int      @default(0)
   readBooks Books[]  @relation("UserBooks")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Books {
   id          String   @id @default(uuid())
   title       String
   author      String
-  description String?
+  description String?  @db.Text
+  category    String
+  coverImage  String?
+  pdfUrl      String?  
+  fileSize    BigInt?  
   publishedAt DateTime?
+  isFeatured  Boolean  @default(false)
+  isPublic    Boolean  @default(true)
+  pageCount   Int?
+  language    String   @default("English")
+  isbn        String?  @unique
   readers     User[]   @relation("UserBooks")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
