@@ -27,21 +27,19 @@ model User {
 }
 
 model Books {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   author      String
-  description String?  @db.Text
-  category    String
-  coverImage  String?
-  pdfUrl      String?  
-  fileSize    BigInt?  
+  description String?   @db.Text
+  category    String 
+  coverImage  String?   @db.Text
+  pdfUrl      String?   @db.Text
+  fileSize    BigInt?
   publishedAt DateTime?
-  isFeatured  Boolean  @default(false)
-  isPublic    Boolean  @default(true)
+  isFeatured  Boolean   @default(false)
   pageCount   Int?
-  language    String   @default("English")
-  isbn        String?  @unique
-  readers     User[]   @relation("UserBooks")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  language    String    @default("English")
+  readers     User[]    @relation("UserBooks")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
