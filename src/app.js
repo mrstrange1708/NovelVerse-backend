@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
+const bookRoutes = require("./routes/bookRoutes");
 
 const app = express();
 app.use(express.json());
@@ -19,8 +20,8 @@ app.options("/", cors(corsOptions));
 
 // Mount auth routes first
 app.use("/auth", authRoutes);
+app.use("/", bookRoutes);
 
-// Root route should come after other routes
 app.get('/', (req, res) => {
     res.send("Welcome to NovelVerse");
 });
