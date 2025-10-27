@@ -10,7 +10,7 @@ class BookController {
         isFeatured: req.query.isFeatured,
         search: req.query.search,
         page: req.query.page || 1,
-        limit: req.query.limit || 10
+        limit: req.query.limit || 100
       };
 
       const result = await bookService.getAllBooks(filters);
