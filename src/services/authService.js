@@ -51,7 +51,7 @@ class AuthService {
       expiresIn: "7d",
     });
 
-    return { message: "Login successful", token };
+    return { message: "Login successful", token, user };
   }
 }
 
