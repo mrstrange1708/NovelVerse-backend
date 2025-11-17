@@ -3,11 +3,9 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 class BookService {
-  // Helper method to handle database errors
   _handleDatabaseError(error, operation = 'database operation') {
     console.error(`Database error during ${operation}:`, error);
     
-    // Check for specific database connection errors
     if (error.code === 'P1001' || error.code === 'P1002' || error.code === 'P1003' || 
         error.message?.includes('Can\'t reach database server') ||
         error.message?.includes('Connection') ||
@@ -15,7 +13,7 @@ class BookService {
       throw new Error('Database Connection lost. Please try again later.');
     }
     
-    // If it's already a custom error, rethrow it
+
     if (error.message === 'Book not found' || 
         error.message === 'Valid book ID is required' ||
         error.message?.includes('is required') ||
@@ -24,11 +22,12 @@ class BookService {
       throw error;
     }
     
-    // Generic database error
+
     throw new Error('Unable to process request. Please try again later.');
   }
 
-  // Get all books with optional filters
+
+
   async getAllBooks(filters = {}) {
     try {
       const { category, language, isFeatured, search, page = 1, limit = 10 } = filters;
@@ -87,7 +86,7 @@ class BookService {
     }
   }
 
-  // Get a single book by ID
+
   async getBookById(id) {
     try {
       if (!id || typeof id !== 'string') {
@@ -121,7 +120,7 @@ class BookService {
     }
   }
 
-  // Create a new book
+
   async createBook(bookData) {
     try {
       const {
@@ -138,7 +137,7 @@ class BookService {
         language
       } = bookData;
 
-      // Validate required fields
+
       if (!title || !title.trim()) {
         throw new Error('Title is required');
       }
@@ -151,7 +150,7 @@ class BookService {
         throw new Error('Category is required');
       }
 
-      // Validate optional fields
+
       if (pageCount && (isNaN(pageCount) || parseInt(pageCount) <= 0)) {
         throw new Error('Page count must be a positive number');
       }
@@ -186,14 +185,13 @@ class BookService {
     }
   }
 
-  // Update a book
+
   async updateBook(id, bookData) {
     try {
       if (!id || typeof id !== 'string') {
         throw new Error('Valid book ID is required');
       }
 
-      // Check if book exists
       const existingBook = await prisma.books.findUnique({ where: { id } });
       if (!existingBook) {
         throw new Error('Book not found');
@@ -201,7 +199,7 @@ class BookService {
 
       const updateData = {};
 
-      // Only update provided fields
+
       if (bookData.title !== undefined) {
         if (!bookData.title.trim()) {
           throw new Error('Title cannot be empty');
@@ -280,14 +278,14 @@ class BookService {
     }
   }
 
-  // Delete a book
+
   async deleteBook(id) {
     try {
       if (!id || typeof id !== 'string') {
         throw new Error('Valid book ID is required');
       }
 
-      // Check if book exists
+
       const existingBook = await prisma.books.findUnique({ where: { id } });
       if (!existingBook) {
         throw new Error('Book not found');

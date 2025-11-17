@@ -16,7 +16,7 @@ const oauth2Client = new google.auth.OAuth2(
   REDIRECT_URI
 );
 
-// Step 1: Redirect to Google login page
+
 router.get("/", (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
   res.redirect(url);
 });
 
-// Step 2: Google callback
+
 router.get("/callback", async (req, res) => {
   try {
     const code = req.query.code;

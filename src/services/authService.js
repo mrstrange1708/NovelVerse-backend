@@ -5,7 +5,7 @@ const PasswordValidator = require("password-validator");
 
 const prisma = new PrismaClient();
 
-// Password schema
+
 const passwordSchema = new PasswordValidator();
 passwordSchema
   .is().min(8)

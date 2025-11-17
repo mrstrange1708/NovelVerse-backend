@@ -6,8 +6,6 @@ const bookRoutes = require("./routes/bookRoutes");
 
 const app = express();
 app.use(express.json());
-
-// Add CORS middleware
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -15,10 +13,9 @@ const corsOptions = {
   credentials: true
 };
 
-app.use(cors(corsOptions)); // automatically handles OPTIONS preflight
+app.use(cors(corsOptions)); 
 app.options("/", cors(corsOptions));
 
-// Mount auth routes first
 app.use("/auth", authRoutes);
 app.use("/", bookRoutes);
 

@@ -1,7 +1,6 @@
 const bookService = require('../services/bookService');
 
 class BookController {
-  // GET /books - Get all books with optional filters
   async getAllBooks(req, res) {
     try {
       const filters = {
@@ -30,7 +29,6 @@ class BookController {
     }
   }
 
-  // GET /book/:id - Get a single book by ID
   async getBookById(req, res) {
     try {
       const { id } = req.params;
@@ -66,12 +64,11 @@ class BookController {
     }
   }
 
-  // POST /createBook - Create a new book
+
   async createBook(req, res) {
     try {
       const bookData = req.body;
 
-      // Basic validation
       if (!bookData || Object.keys(bookData).length === 0) {
         return res.status(400).json({
           success: false,
@@ -89,7 +86,6 @@ class BookController {
     } catch (error) {
       console.error('Error in createBook:', error);
 
-      // Handle validation errors
       if (
         error.message.includes('required') ||
         error.message.includes('must be') ||
@@ -110,7 +106,6 @@ class BookController {
     }
   }
 
-  // PUT /updateBook - Update a book
   async updateBook(req, res) {
     try {
       const { id } = req.body;
@@ -123,7 +118,7 @@ class BookController {
       }
 
       const bookData = { ...req.body };
-      delete bookData.id; // Remove id from update data
+      delete bookData.id; 
 
       if (Object.keys(bookData).length === 0) {
         return res.status(400).json({
@@ -169,7 +164,7 @@ class BookController {
     }
   }
 
-  // DELETE /deleteBook - Delete a book
+
   async deleteBook(req, res) {
     try {
       const { id } = req.body;
