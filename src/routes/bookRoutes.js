@@ -9,5 +9,8 @@ router.get('/book/:id', authMiddleware.authenticateToken, bookController.getBook
 router.post('/createBook', authMiddleware.authenticateToken, bookController.createBook);
 router.put('/updateBook', authMiddleware.authenticateToken, bookController.updateBook);
 router.delete('/deleteBook', authMiddleware.authenticateToken, bookController.deleteBook);
+router.get('/book/slug/:slug', authMiddleware.authenticateToken, bookController.getBookBySlug);
+router.get('/book/:slug/manifest', authMiddleware.authenticateToken, bookController.getManifest);
+router.post('/book/progress', authMiddleware.authenticateToken, bookController.updateProgress);
 
 module.exports = router;

@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
   output   = "../src/generated/prisma"
 }
 
@@ -16,30 +11,33 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  firstName String
   lastName  String?
   email     String   @unique
   password  String?
   booksRead Int      @default(0)
-  readBooks Books[]  @relation("UserBooks")
+  firstName String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Books     Books[]  @relation("UserBooks")
 }
 
 model Books {
-  id          String    @id @default(uuid())
-  title       String
-  author      String
-  description String?   @db.Text
-  category    String 
-  coverImage  String?   @db.Text
-  pdfUrl      String?   @db.Text
-  fileSize    BigInt?
-  publishedAt DateTime?
-  isFeatured  Boolean   @default(false)
-  pageCount   Int?
-  language    String    @default("English")
-  readers     User[]    @relation("UserBooks")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String    @id @default(uuid())
+  title        String
+  slug         String?                  
+  author       String
+  description  String?   @db.Text
+  publishedAt  DateTime?
+  category     String
+  coverImage   String?   @db.Text
+  createdAt    DateTime  @default(now())
+  fileSize     BigInt?
+  isFeatured   Boolean   @default(false)
+  language     String    @default("English")
+  pageCount    Int?
+  pdfUrl       String?   @db.Text
+  manifestUrl  String?                                 
+  processed    Boolean   @default(false)                
+  updatedAt    DateTime  @updatedAt
+  User         User[]    @relation("UserBooks")
 }
