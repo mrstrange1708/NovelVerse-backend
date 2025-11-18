@@ -83,7 +83,7 @@ class BookService {
             manifestUrl: true,
             processed: true,
             _count: {
-              select: { readers: true },
+              select: { User: true },
             },
           },
           orderBy: { createdAt: "desc" },
@@ -114,7 +114,7 @@ class BookService {
       const book = await prisma.books.findUnique({
         where: { id },
         include: {
-          readers: {
+          User: {
             select: {
               id: true,
               firstName: true,
@@ -123,7 +123,7 @@ class BookService {
             },
           },
           _count: {
-            select: { readers: true },
+            select: { User: true },
           },
         },
       });
@@ -294,7 +294,7 @@ class BookService {
         data: updateData,
         include: {
           _count: {
-            select: { readers: true },
+            select: { User: true },
           },
         },
       });
@@ -339,8 +339,8 @@ class BookService {
       const book = await prisma.books.findUnique({
         where: { slug },
         include: {
-          readers: true,
-          _count: { select: { readers: true } },
+          User: true,
+          _count: { select: { User: true } },
         },
       });
 
