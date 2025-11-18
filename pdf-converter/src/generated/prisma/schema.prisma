@@ -1,0 +1,43 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
+  output        = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  lastName  String?
+  email     String   @unique
+  password  String?
+  booksRead Int      @default(0)
+  firstName String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Books     Books[]  @relation("UserBooks")
+}
+
+model Books {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String? // NEW
+  author      String
+  description String?   @db.Text
+  publishedAt DateTime?
+  category    String
+  coverImage  String?   @db.Text
+  createdAt   DateTime  @default(now())
+  fileSize    BigInt?
+  isFeatured  Boolean   @default(false)
+  language    String    @default("English")
+  pageCount   Int?
+  pdfUrl      String?   @db.Text
+  manifestUrl String? // NEW
+  processed   Boolean   @default(false) // NEW
+  updatedAt   DateTime  @updatedAt
+  User        User[]    @relation("UserBooks")
+}
