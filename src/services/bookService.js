@@ -83,7 +83,7 @@ class BookService {
             manifestUrl: true,
             processed: true,
             _count: {
-              select: { User: true },
+              select: { userBooks: true },
             },
           },
           orderBy: { createdAt: "desc" },

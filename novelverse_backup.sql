@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 9.4.0, for macos15.4 (arm64)
 --
--- Host: localhost    Database: NovelVerse
+-- Host: localhost    Database: NovelVerse_new
 -- ------------------------------------------------------
 -- Server version	9.4.0
 
@@ -16,59 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `_prisma_migrations`
+-- Table structure for table `UserBooks`
 --
 
-DROP TABLE IF EXISTS `_prisma_migrations`;
+DROP TABLE IF EXISTS `UserBooks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `_prisma_migrations` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `checksum` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `finished_at` datetime(3) DEFAULT NULL,
-  `migration_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logs` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `rolled_back_at` datetime(3) DEFAULT NULL,
-  `started_at` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `applied_steps_count` int unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `_prisma_migrations`
---
-
-LOCK TABLES `_prisma_migrations` WRITE;
-/*!40000 ALTER TABLE `_prisma_migrations` DISABLE KEYS */;
-INSERT INTO `_prisma_migrations` VALUES ('12bd45b1-89c1-48c9-bf4a-05f8536df287','dcbb40396bd56da2714caf18bf209a3a6afc68e744fd97a7dacaaa68e2db0837','2025-10-23 13:57:01.451','20250930163216_password_optional',NULL,NULL,'2025-10-23 13:57:01.446',1),('2097d5ca-c4d1-4402-96fd-a393c99f0ab7','5a92e29e28dc21b390a75c7145f412dec83b63aa832b52e7c07da51e36707667','2025-10-23 13:57:01.480','20251023133407_schema',NULL,NULL,'2025-10-23 13:57:01.451',1),('23f4a20f-0825-4a62-b907-a30d41652284','2e4c9cd216bcf41d6638925446acf71d0d12cd9a2796d36c7422ae1544a2c586','2025-10-23 13:57:01.428','20250927110512_schema_init',NULL,NULL,'2025-10-23 13:57:01.419',1),('307525b3-d816-4ac1-8565-94056d2b9db3','54aec9f606c0fd35b0acfaef4f129addb312224bb2f916e6e06640f693c5c1d5','2025-10-23 13:57:30.771','20251023135730_new_schema',NULL,NULL,'2025-10-23 13:57:30.721',1),('89865882-2485-4f6c-ae43-b50bac0e36ba','cf66e4f35d39a2df4edb24e2fbee389ebe10d0ad3dc5209109063106bea13095','2025-10-24 13:29:46.697','20251024132946_schema_changes',NULL,NULL,'2025-10-24 13:29:46.670',1),('8cc5d2c9-296d-43ba-a5d3-15ac64b965c9','23b67392673676293eca48d30f1a234b7f88558576a6ec36c44d460656664aaf','2025-10-24 13:15:41.574','20251024131541_schema_chamges',NULL,NULL,'2025-10-24 13:15:41.550',1),('b6ad580d-80aa-45bb-a42c-6b0bd15d7c96','7f776f42f31b4f355d33e46a2f35c2c28636b51ee45645b385edb4135fa4c988','2025-10-23 13:57:01.418','20250927104348_init',NULL,NULL,'2025-10-23 13:57:01.411',1),('d6c8d5fc-9be0-4b7b-a200-d2f3bc0aa94f','002e4ae38ff7c579fe88588e9e34ac289ef0e55fa3177134b8f001087ef5ffcd','2025-10-23 16:58:34.333','20251023165834_final_schema',NULL,NULL,'2025-10-23 16:58:34.306',1),('de4b67c5-f0a6-4971-9434-c587c7a783fc','8696317fbc3a0d404304eb439460e906c6d7324e82e7f225e6110d74108112ad','2025-10-23 13:57:01.437','20250927111501_fix_firstname_field',NULL,NULL,'2025-10-23 13:57:01.428',1),('eeb91614-4fd4-4db8-a0b7-321631bf1ab7','4f846e236084ef3645ce23b43ca0ff2a03d699770e3238ab764808ddeabcb46c','2025-10-23 13:57:01.446','20250930162118_password_optional_for_google_auth',NULL,NULL,'2025-10-23 13:57:01.437',1);
-/*!40000 ALTER TABLE `_prisma_migrations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `_UserBooks`
---
-
-DROP TABLE IF EXISTS `_UserBooks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `_UserBooks` (
+CREATE TABLE `UserBooks` (
   `A` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `B` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`A`, `B`),
-  KEY `_UserBooks_B_index` (`B`),
-  CONSTRAINT `_UserBooks_A_fkey` FOREIGN KEY (`A`) REFERENCES `Books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `_UserBooks_B_fkey` FOREIGN KEY (`B`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `UserBooks_B_index` (`B`),
+  CONSTRAINT `UserBooks_A_fkey` FOREIGN KEY (`A`) REFERENCES `Books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `UserBooks_B_fkey` FOREIGN KEY (`B`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `_UserBooks`
+-- Dumping data for table `UserBooks`
 --
 
-LOCK TABLES `_UserBooks` WRITE;
-/*!40000 ALTER TABLE `_UserBooks` DISABLE KEYS */;
-/*!40000 ALTER TABLE `_UserBooks` ENABLE KEYS */;
+LOCK TABLES `UserBooks` WRITE;
+/*!40000 ALTER TABLE `UserBooks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `UserBooks` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

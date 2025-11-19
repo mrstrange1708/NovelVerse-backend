@@ -18,6 +18,9 @@ model User {
   firstName String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Books     Books[]     @relation("UserBooks")
+  userBooks UserBooks[]
 }
 
 model Books {
@@ -38,4 +41,17 @@ model Books {
   manifestUrl String?
   processed   Boolean   @default(false)
   updatedAt   DateTime  @updatedAt
+
+  User      User[]      @relation("UserBooks")
+  userBooks UserBooks[]
+}
+
+model UserBooks {
+  A String
+  B String
+
+  User  User  @relation(fields: [B], references: [id])
+  Books Books @relation(fields: [A], references: [id])
+
+  @@id([A, B])
 }
