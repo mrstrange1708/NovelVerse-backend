@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
   output        = "../src/generated/prisma"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
 }
 
 datasource db {
@@ -18,7 +18,6 @@ model User {
   firstName String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Books     Books[]  @relation("UserBooks")
 }
 
 model Books {
@@ -39,5 +38,4 @@ model Books {
   manifestUrl String?
   processed   Boolean   @default(false)
   updatedAt   DateTime  @updatedAt
-  User        User[]    @relation("UserBooks")
 }
