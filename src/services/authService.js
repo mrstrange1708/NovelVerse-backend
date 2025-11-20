@@ -5,15 +5,21 @@ const PasswordValidator = require("password-validator");
 
 const prisma = new PrismaClient();
 
-
 const passwordSchema = new PasswordValidator();
 passwordSchema
-  .is().min(8)
-  .has().uppercase()
-  .has().lowercase()
-  .has().digits()
-  .has().symbols()
-  .has().not().spaces();
+  .is()
+  .min(8)
+  .has()
+  .uppercase()
+  .has()
+  .lowercase()
+  .has()
+  .digits()
+  .has()
+  .symbols()
+  .has()
+  .not()
+  .spaces();
 
 class AuthService {
   async register(firstName, lastName, email, password) {
@@ -37,7 +43,7 @@ class AuthService {
       data: { firstName, lastName, email, password: hashedPassword },
     });
 
-    return { message: "User registered successfully", user };
+    return { message: "User registered successfully" };
   }
 
   async login(email, password) {
@@ -51,7 +57,25 @@ class AuthService {
       expiresIn: "7d",
     });
 
-    return { message: "Login successful", token, user };
+    return { message: "Login successful", token ,user };
+  }
+
+  async getUserById(userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    return user;
   }
 }
 

@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URL;
+const frontendUrl = process.env.FRONTEND_URL;
 
 const oauth2Client = new google.auth.OAuth2(
   CLIENT_ID,
@@ -24,6 +25,8 @@ router.get("/", (req, res) => {
   });
   res.redirect(url);
 });
+
+
 
 
 router.get("/callback", async (req, res) => {
@@ -54,11 +57,11 @@ router.get("/callback", async (req, res) => {
       },
     });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    const frontendUrl = process.env.FRONTEND_URL;
+    
     res.redirect(`${frontendUrl}/home?token=${token}`);
   } catch (err) {
     console.error("Google auth failed:", err);
