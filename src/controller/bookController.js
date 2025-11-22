@@ -164,37 +164,37 @@ class BookController {
   }
 
   async getBookBySlug(req, res) {
-  try {
-    const { slug } = req.params;
+    try {
+      const { slug } = req.params;
 
-    if (!slug) {
-      return res.status(400).json({
+      if (!slug) {
+        return res.status(400).json({
+          success: false,
+          message: "Slug is required"
+        });
+      }
+
+      const book = await bookService.getBookBySlug(slug);
+
+      return res.status(200).json({
+        success: true,
+        data: book
+      });
+
+    } catch (error) {
+      console.error("Error in getBookBySlug:", error);
+
+      if (error.message === "Book not found") {
+        return res.status(404).json({ success: false, message: error.message });
+      }
+
+      return res.status(500).json({
         success: false,
-        message: "Slug is required"
+        message: "Failed to fetch book",
+        error: error.message
       });
     }
-
-    const book = await bookService.getBookBySlug(slug);
-
-    return res.status(200).json({
-      success: true,
-      data: book
-    });
-
-  } catch (error) {
-    console.error("Error in getBookBySlug:", error);
-
-    if (error.message === "Book not found") {
-      return res.status(404).json({ success: false, message: error.message });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch book",
-      error: error.message
-    });
   }
-}
 
 
   async getManifest(req, res) {
@@ -222,19 +222,45 @@ class BookController {
 
   async updateProgress(req, res) {
     try {
-      const { userId, slug, page } = req.body;
+      const { userId, slug, currentPage, totalPages } = req.body;
 
-      const result = await bookService.updateProgress(userId, slug, page);
+      if (!userId || !slug || currentPage === undefined || !totalPages) {
+        return res.status(400).json({
+          success: false,
+          message: "userId, slug, currentPage, and totalPages are required",
+        });
+      }
+
+      // Get book by slug
+      const book = await bookService.getBookBySlug(slug);
+      if (!book) {
+        return res.status(404).json({
+          success: false,
+          message: "Book not found",
+        });
+      }
+
+      // Use reading service for progress tracking
+      const readingService = require("../services/readingService");
+      const result = await readingService.updateReadingProgress(
+        userId,
+        book.id,
+        currentPage,
+        totalPages
+      );
 
       return res.status(200).json({
         success: true,
-        message: "Progress updated",
+        message: result.completed
+          ? "Congratulations! Book completed!"
+          : "Progress updated",
         data: result,
       });
     } catch (error) {
+      console.error("Error in updateProgress:", error);
       return res.status(500).json({
         success: false,
-        message: error.message,
+        message: error.message || "Failed to update progress",
       });
     }
   }

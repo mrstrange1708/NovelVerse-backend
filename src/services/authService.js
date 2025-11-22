@@ -57,10 +57,12 @@ class AuthService {
       expiresIn: "7d",
     });
 
-    return { message: "Login successful", token ,user };
+    return { message: "Login successful", token, user };
   }
 
   async getUserById(userId) {
+    const readingService = require("./readingService");
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -68,6 +70,7 @@ class AuthService {
         firstName: true,
         lastName: true,
         email: true,
+        booksRead: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -75,7 +78,19 @@ class AuthService {
 
     if (!user) throw new Error("User not found");
 
-    return user;
+    // Get reading data
+    const [continueReading, completedBooks, streak] = await Promise.all([
+      readingService.getContinueReading(userId, 5),
+      readingService.getCompletedBooks(userId),
+      readingService.getReadingStreak(userId),
+    ]);
+
+    return {
+      ...user,
+      continueReading,
+      readBooks: completedBooks,
+      readingStreak: streak.currentStreak,
+    };
   }
 }
 

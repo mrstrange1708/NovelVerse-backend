@@ -19,8 +19,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Books     Books[]     @relation("UserBooks")
-  userBooks UserBooks[]
+  Books           Books[]           @relation("UserBooks")
+  userBooks       UserBooks[]
+  readingProgress ReadingProgress[]
+  readingStreaks  ReadingStreak[]
 }
 
 model Books {
@@ -42,8 +44,9 @@ model Books {
   processed   Boolean   @default(false)
   updatedAt   DateTime  @updatedAt
 
-  User      User[]      @relation("UserBooks")
-  userBooks UserBooks[]
+  User            User[]            @relation("UserBooks")
+  userBooks       UserBooks[]
+  readingProgress ReadingProgress[]
 }
 
 model UserBooks {
@@ -54,4 +57,39 @@ model UserBooks {
   Books Books @relation(fields: [A], references: [id])
 
   @@id([A, B])
+}
+
+model ReadingProgress {
+  id              String   @id @default(uuid())
+  userId          String
+  bookId          String
+  currentPage     Int      @default(1)
+  totalPages      Int
+  progressPercent Float    @default(0)
+  lastReadAt      DateTime @default(now())
+  isCompleted     Boolean  @default(false)
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Books @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@index([lastReadAt])
+}
+
+model ReadingStreak {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime @db.Date
+  pagesRead Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
