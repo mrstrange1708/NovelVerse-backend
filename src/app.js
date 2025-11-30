@@ -19,7 +19,7 @@ app.options("/", cors(corsOptions));
 
 app.use("/auth", authRoutes);
 app.use("/", bookRoutes);
-app.use("/", readingRoutes);
+app.use("/reading", readingRoutes);
 
 app.get('/', (req, res) => {
   res.send("Welcome to NovelVerse");
