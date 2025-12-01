@@ -27,7 +27,7 @@ export declare namespace Decimal {
     export type Modulo = Rounding | 9;
     export type Value = string | number | Decimal;
 
-    // http://mikemcl.github.io/decimal.js/#constructor-properties
+
     export interface Config {
         precision?: number;
         rounding?: Rounding;

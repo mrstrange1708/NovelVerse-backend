@@ -78,7 +78,7 @@ class AuthService {
 
     if (!user) throw new Error("User not found");
 
-    // Get reading data
+
     const [continueReading, completedBooks, streak] = await Promise.all([
       readingService.getContinueReading(userId, 5),
       readingService.getCompletedBooks(userId),

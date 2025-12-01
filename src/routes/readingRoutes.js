@@ -4,8 +4,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// All routes require authentication
-router.post('/progress', authMiddleware.authenticateToken, readingController.updateProgress);
+
+router.put('/progress', authMiddleware.authenticateToken, readingController.updateProgress);
 router.get('/progress', authMiddleware.authenticateToken, readingController.getAllProgress);
 router.get('/progress/:bookId', authMiddleware.authenticateToken, readingController.getBookProgress);
 router.get('/continue', authMiddleware.authenticateToken, readingController.getContinueReading);

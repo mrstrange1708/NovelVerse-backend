@@ -6,7 +6,7 @@ async function createTables() {
     try {
         console.log('Creating ReadingProgress table...');
 
-        // Create ReadingProgress table
+
         await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS \`ReadingProgress\` (
         \`id\` VARCHAR(191) NOT NULL,
@@ -29,7 +29,7 @@ async function createTables() {
 
         console.log('Creating ReadingStreak table...');
 
-        // Create ReadingStreak table
+
         await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS \`ReadingStreak\` (
         \`id\` VARCHAR(191) NOT NULL,
@@ -46,7 +46,7 @@ async function createTables() {
 
         console.log('Adding foreign key constraints...');
 
-        // Add foreign keys for ReadingProgress
+
         try {
             await prisma.$executeRawUnsafe(`
         ALTER TABLE \`ReadingProgress\` 
@@ -65,7 +65,7 @@ async function createTables() {
             console.log('Foreign key ReadingProgress_bookId_fkey may already exist, skipping...');
         }
 
-        // Add foreign key for ReadingStreak
+
         try {
             await prisma.$executeRawUnsafe(`
         ALTER TABLE \`ReadingStreak\` 

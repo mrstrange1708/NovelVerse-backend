@@ -1,10 +1,6 @@
 const readingService = require("../services/readingService");
 
 class ReadingController {
-    /**
-     * Update reading progress
-     * POST /api/reading/progress
-     */
     async updateProgress(req, res) {
         try {
             const { userId, bookId, currentPage, totalPages } = req.body;
@@ -40,10 +36,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get reading progress for a specific book
-     * GET /api/reading/progress/:bookId
-     */
     async getBookProgress(req, res) {
         try {
             const { bookId } = req.params;
@@ -72,10 +64,7 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get all reading progress for user
-     * GET /api/reading/progress
-     */
+    
     async getAllProgress(req, res) {
         try {
             const userId = req.user.userId;
@@ -96,10 +85,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get continue reading list
-     * GET /api/reading/continue
-     */
     async getContinueReading(req, res) {
         try {
             const userId = req.user.userId;
@@ -121,10 +106,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get completed books
-     * GET /api/reading/completed
-     */
     async getCompletedBooks(req, res) {
         try {
             const userId = req.user.userId;
@@ -145,10 +126,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get reading streak
-     * GET /api/reading/streak
-     */
     async getReadingStreak(req, res) {
         try {
             const userId = req.user.userId;
@@ -169,10 +146,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Get reading heatmap data
-     * GET /api/reading/heatmap/:year
-     */
     async getReadingHeatmap(req, res) {
         try {
             const userId = req.user.userId;
@@ -194,10 +167,6 @@ class ReadingController {
         }
     }
 
-    /**
-     * Track when user opens a book
-     * POST /api/reading/track-open
-     */
     async trackBookOpen(req, res) {
         try {
             const { userId, bookId } = req.body;

@@ -24,7 +24,7 @@ model User {
 model Books {
   id          String    @id @default(uuid())
   title       String
-  slug        String? // NEW
+  slug        String? 
   author      String
   description String?   @db.Text
   publishedAt DateTime?
@@ -36,8 +36,8 @@ model Books {
   language    String    @default("English")
   pageCount   Int?
   pdfUrl      String?   @db.Text
-  manifestUrl String? // NEW
-  processed   Boolean   @default(false) // NEW
+  manifestUrl String? 
+  processed   Boolean   @default(false) 
   updatedAt   DateTime  @updatedAt
   User        User[]    @relation("UserBooks")
 }

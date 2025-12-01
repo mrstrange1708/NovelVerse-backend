@@ -18,33 +18,29 @@ async function processBook(book) {
   console.log(`➡️ Slug: ${book.slug}\n`);
 
   try {
-    // 1. Download PDF
     console.log("⬇️  Downloading PDF...");
     const pdfPath = await downloadPdf(book.pdfUrl, book.slug);
-
-    // 2. Convert PDF → Image files
-    console.log("🖼️  Converting PDF to images...");
     const imagePaths = await convertToImages(pdfPath, book.slug);
 
-    // 3. Upload images to Cloudinary
+
     console.log("☁️  Uploading pages to Cloudinary...");
     const cloudUrls = await uploadToCloudinary(book.slug, imagePaths);
 
     const pageCount = cloudUrls.length;
     console.log(`📄 Total Pages Uploaded: ${pageCount}`);
 
-    // 4. Generate manifest.json
+
     console.log("📝  Generating manifest.json...");
     const manifestPath = generateManifest(cloudUrls, book.slug);
 
-    // 5. Upload manifest.json
+
     console.log("☁️  Uploading manifest.json...");
     const manifestUpload = await cloudinary.uploader.upload(manifestPath, {
       folder: `NovelVerse/books/${book.slug}`,
       resource_type: "raw"
     });
 
-    // 6. Update DB
+
     console.log("💾 Updating database...\n");
     await prisma.books.update({
       where: { id: book.id },

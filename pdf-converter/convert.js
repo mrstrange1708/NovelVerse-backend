@@ -3,8 +3,8 @@ import { convertToImages } from "./utils/convertToImages.js";
 import { uploadToCloudinary } from "./utils/uploadToCloudinary.js";
 import { generateManifest } from "./utils/generateManifest.js";
 
-const pdfUrl = process.argv[2];   // first arg
-const bookId = process.argv[3];  // second arg
+const pdfUrl = process.argv[2];   
+const bookId = process.argv[3];  
 
 if (!pdfUrl || !bookId) {
   console.error("Usage: node convert.js <pdfUrl> <bookId>");
