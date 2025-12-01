@@ -3,17 +3,11 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 class ReadingService {
-    /**
-     * Update reading progress for a user and book
-     * Handles 90% completion threshold, UserBooks addition, and streak tracking
-     */
     async updateReadingProgress(userId, bookId, currentPage, totalPages) {
         try {
-            // Calculate progress percentage
             const progressPercent = (currentPage / totalPages) * 100;
             const isCompleted = progressPercent >= 90;
 
-            // Get existing progress
             const existingProgress = await prisma.readingProgress.findUnique({
                 where: {
                     userId_bookId: { userId, bookId },
@@ -22,7 +16,7 @@ class ReadingService {
 
             const wasAlreadyCompleted = existingProgress?.isCompleted || false;
 
-            // Update or create reading progress
+
             const progress = await prisma.readingProgress.upsert({
                 where: {
                     userId_bookId: { userId, bookId },
@@ -47,7 +41,7 @@ class ReadingService {
                 },
             });
 
-            // Update reading streak for today
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -69,9 +63,8 @@ class ReadingService {
                 },
             });
 
-            // Handle book completion (90% threshold)
+
             if (isCompleted && !wasAlreadyCompleted) {
-                // Add to UserBooks table (many-to-many relationship)
                 const existingUserBook = await prisma.userBooks.findUnique({
                     where: {
                         A_B: { A: bookId, B: userId },
@@ -86,7 +79,7 @@ class ReadingService {
                         },
                     });
 
-                    // Increment user's booksRead counter
+
                     await prisma.user.update({
                         where: { id: userId },
                         data: {
@@ -110,9 +103,7 @@ class ReadingService {
         }
     }
 
-    /**
-     * Get user's reading progress for a specific book
-     */
+
     async getBookProgress(userId, bookId) {
         try {
             const progress = await prisma.readingProgress.findUnique({
@@ -141,9 +132,7 @@ class ReadingService {
         }
     }
 
-    /**
-     * Get all reading progress for a user
-     */
+
     async getUserReadingProgress(userId) {
         try {
             const progress = await prisma.readingProgress.findMany({
@@ -173,9 +162,7 @@ class ReadingService {
         }
     }
 
-    /**
-     * Get continue reading list (books in progress, not completed, < 90%)
-     */
+
     async getContinueReading(userId, limit = 5) {
         try {
             const continueReading = await prisma.readingProgress.findMany({
@@ -205,7 +192,7 @@ class ReadingService {
                 take: limit,
             });
 
-            // Flatten the response to match frontend expectations
+
             return continueReading.map(progress => ({
                 ...progress.book,
                 progressId: progress.id,
@@ -213,7 +200,6 @@ class ReadingService {
                 totalPages: progress.totalPages,
                 progressPercent: progress.progressPercent,
                 lastReadAt: progress.lastReadAt,
-                // Ensure ID is the book ID
                 id: progress.book.id
             }));
         } catch (error) {
@@ -222,9 +208,7 @@ class ReadingService {
         }
     }
 
-    /**
-     * Get completed books (from UserBooks table)
-     */
+
     async getCompletedBooks(userId) {
         try {
             const userBooks = await prisma.userBooks.findMany({
@@ -244,7 +228,6 @@ class ReadingService {
                 },
             });
 
-            // Get completion dates from ReadingProgress
             const booksWithProgress = await Promise.all(
                 userBooks.map(async (ub) => {
                     const progress = await prisma.readingProgress.findUnique({
@@ -276,9 +259,6 @@ class ReadingService {
         }
     }
 
-    /**
-     * Calculate current reading streak
-     */
     async getReadingStreak(userId) {
         try {
             const today = new Date();
@@ -287,7 +267,6 @@ class ReadingService {
             let currentStreak = 0;
             let checkDate = new Date(today);
 
-            // Check backwards from today to find consecutive days
             while (true) {
                 const streak = await prisma.readingStreak.findUnique({
                     where: {
@@ -303,7 +282,6 @@ class ReadingService {
                 }
             }
 
-            // Get total pages read
             const allStreaks = await prisma.readingStreak.findMany({
                 where: { userId },
             });
@@ -328,9 +306,6 @@ class ReadingService {
         }
     }
 
-    /**
-     * Get reading heatmap data for a specific year
-     */
     async getReadingHeatmap(userId, year = new Date().getFullYear()) {
         try {
             const startDate = new Date(year, 0, 1);
@@ -349,7 +324,6 @@ class ReadingService {
                 },
             });
 
-            // Format for heatmap
             const heatmapData = streaks.map((streak) => ({
                 date: streak.date,
                 pagesRead: streak.pagesRead,
@@ -362,15 +336,10 @@ class ReadingService {
         }
     }
 
-    /**
-     * Track when a user opens a book (for streak counting)
-     */
     async trackBookOpen(userId, bookId) {
         try {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-
-            // Create or update streak for today (mark that user read today)
             await prisma.readingStreak.upsert({
                 where: {
                     userId_date: { userId, date: today },
@@ -378,11 +347,9 @@ class ReadingService {
                 create: {
                     userId,
                     date: today,
-                    pagesRead: 1, // At least 1 page to count the day
+                    pagesRead: 1,
                 },
-                update: {
-                    // If already exists, don't change pages (will be updated by updateReadingProgress)
-                },
+                update: {},
             });
 
             return { success: true };

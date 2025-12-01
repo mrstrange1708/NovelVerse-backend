@@ -231,7 +231,7 @@ class BookController {
         });
       }
 
-      // Get book by slug
+
       const book = await bookService.getBookBySlug(slug);
       if (!book) {
         return res.status(404).json({
@@ -240,7 +240,7 @@ class BookController {
         });
       }
 
-      // Use reading service for progress tracking
+
       const readingService = require("../services/readingService");
       const result = await readingService.updateReadingProgress(
         userId,
