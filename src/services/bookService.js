@@ -38,7 +38,9 @@ class BookService {
         isFeatured,
         search,
         page = 1,
-        limit = 10,
+        limit = 50,
+        sortBy = "createdAt",
+        sortOrder = "desc",
       } = filters;
 
       const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -46,7 +48,7 @@ class BookService {
 
       const where = {};
 
-      if (category) {
+      if (category && category !== "All") {
         where.category = category;
       }
 
@@ -55,15 +57,37 @@ class BookService {
       }
 
       if (isFeatured !== undefined) {
-        where.isFeatured = isFeatured === "true";
+        where.isFeatured = isFeatured === "true" || isFeatured === true;
       }
 
-      if (search) {
+      if (search && search.trim()) {
         where.OR = [
-          { title: { contains: search, mode: "insensitive" } },
-          { author: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
+          { title: { contains: search.trim(), mode: "insensitive" } },
+          { author: { contains: search.trim(), mode: "insensitive" } },
+          { description: { contains: search.trim(), mode: "insensitive" } },
         ];
+      }
+
+      // Build orderBy based on sortBy parameter
+      let orderBy = {};
+      switch (sortBy) {
+        case "title":
+          orderBy = { title: sortOrder };
+          break;
+        case "author":
+          orderBy = { author: sortOrder };
+          break;
+        case "pageCount":
+        case "pages":
+          orderBy = { pageCount: sortOrder };
+          break;
+        case "publishedAt":
+          orderBy = { publishedAt: sortOrder };
+          break;
+        case "createdAt":
+        default:
+          orderBy = { createdAt: sortOrder };
+          break;
       }
 
       const [books, total] = await Promise.all([
@@ -82,16 +106,21 @@ class BookService {
             slug: true,
             manifestUrl: true,
             processed: true,
+            description: true,
+            publishedAt: true,
+            isFeatured: true,
+            createdAt: true,
             _count: {
               select: { userBooks: true },
             },
           },
-          orderBy: { createdAt: "desc" },
+          orderBy,
         }),
         prisma.books.count({ where }),
       ]);
 
       return {
+        success: true,
         books,
         pagination: {
           total,
