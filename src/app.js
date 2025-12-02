@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 app.options("/", cors(corsOptions));
 
 app.use("/auth", authRoutes);
-app.use("/", bookRoutes);
+app.use(bookRoutes);
 app.use("/reading", readingRoutes);
 app.use("/favorites", favoritesRoutes);
 
