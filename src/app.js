@@ -9,7 +9,11 @@ const favoritesRoutes = require("./routes/favoritesRoutes");
 const app = express();
 app.use(express.json());
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: [
+    process.env.FRONTEND_URL,
+    "https://novelverse.theshaik.tech",
+    "http://localhost:3000"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: [
     "Origin",
@@ -22,7 +26,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("/", cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use("/auth", authRoutes);
 app.use("/", bookRoutes);
