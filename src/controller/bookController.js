@@ -10,13 +10,26 @@ class BookController {
         search: req.query.search,
         page: req.query.page || 1,
         limit: req.query.limit || 100,
+        sortBy: req.query.sortBy,
+        sortOrder: req.query.sortOrder,
+        paginateByCategory: req.query.paginateByCategory === "true",
+        categoriesPerPage: req.query.categoriesPerPage || 3,
       };
 
       const result = await bookService.getAllBooks(filters);
 
+      // If paginating by category, return categoryGroups
+      if (result.categoryGroups) {
+        return res.status(200).json({
+          success: true,
+          categoryGroups: result.categoryGroups,
+          pagination: result.pagination,
+        });
+      }
+
       return res.status(200).json({
         success: true,
-        data: result.books,
+        books: result.books,
         pagination: result.pagination,
       });
     } catch (error) {
@@ -170,7 +183,7 @@ class BookController {
       if (!slug) {
         return res.status(400).json({
           success: false,
-          message: "Slug is required"
+          message: "Slug is required",
         });
       }
 
@@ -178,9 +191,8 @@ class BookController {
 
       return res.status(200).json({
         success: true,
-        data: book
+        data: book,
       });
-
     } catch (error) {
       console.error("Error in getBookBySlug:", error);
 
@@ -191,11 +203,10 @@ class BookController {
       return res.status(500).json({
         success: false,
         message: "Failed to fetch book",
-        error: error.message
+        error: error.message,
       });
     }
   }
-
 
   async getManifest(req, res) {
     try {
@@ -231,7 +242,6 @@ class BookController {
         });
       }
 
-
       const book = await bookService.getBookBySlug(slug);
       if (!book) {
         return res.status(404).json({
@@ -239,7 +249,6 @@ class BookController {
           message: "Book not found",
         });
       }
-
 
       const readingService = require("../services/readingService");
       const result = await readingService.updateReadingProgress(

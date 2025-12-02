@@ -10,56 +10,44 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  lastName  String?
-  email     String   @unique
-  password  String?
-  booksRead Int      @default(0)
-  firstName String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Books           Books[]           @relation("UserBooks")
-  userBooks       UserBooks[]
+  id              String            @id @default(uuid())
+  lastName        String?
+  email           String            @unique
+  password        String?
+  booksRead       Int               @default(0)
+  firstName       String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  UserBooks       UserBooks[]
   readingProgress ReadingProgress[]
   readingStreaks  ReadingStreak[]
   favorites       Favorites[]
 }
 
 model Books {
-  id          String    @id @default(uuid())
-  title       String
-  slug        String    @unique
-  author      String
-  description String?   @db.Text
-  publishedAt DateTime?
-  category    String
-  coverImage  String?   @db.Text
-  createdAt   DateTime  @default(now())
-  fileSize    BigInt?
-  isFeatured  Boolean   @default(false)
-  language    String    @default("English")
-  pageCount   Int?
-  pdfUrl      String?   @db.Text
-  manifestUrl String?
-  processed   Boolean   @default(false)
-  updatedAt   DateTime  @updatedAt
-
-  User            User[]            @relation("UserBooks")
-  userBooks       UserBooks[]
+  id              String            @id @default(uuid())
+  title           String
+  author          String
+  description     String?           @db.Text
+  publishedAt     DateTime?
+  category        String
+  coverImage      String?           @db.Text
+  createdAt       DateTime          @default(now())
+  fileSize        BigInt?
+  isFeatured      Boolean           @default(false)
+  language        String            @default("English")
+  pageCount       Int?
+  pdfUrl          String?           @db.Text
+  updatedAt       DateTime          @updatedAt
+  manifestUrl     String?
+  processed       Boolean           @default(false)
+  slug            String            @unique
+  UserBooks       UserBooks[]
   readingProgress ReadingProgress[]
   favorites       Favorites[]
 }
 
-model UserBooks {
-  A String
-  B String
 
-  User  User  @relation(fields: [B], references: [id])
-  Books Books @relation(fields: [A], references: [id])
-
-  @@id([A, B])
-}
 
 model ReadingProgress {
   id              String    @id @default(uuid())
@@ -94,6 +82,17 @@ model ReadingStreak {
 
   @@unique([userId, date])
   @@index([userId, date])
+}
+
+model UserBooks {
+  A     String
+  B     String
+  Books Books  @relation(fields: [A], references: [id], onDelete: Cascade)
+  User  User   @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@id([A, B])
+  @@index([B], map: "_UserBooks_B_index")
+  @@map("_UserBooks")
 }
 
 model Favorites {

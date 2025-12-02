@@ -3,8 +3,7 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("../generated/prisma");
-const prisma = new PrismaClient();
+const prisma = require("../lib/prisma");
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -17,7 +16,6 @@ const oauth2Client = new google.auth.OAuth2(
   REDIRECT_URI
 );
 
-
 router.get("/", (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
@@ -25,9 +23,6 @@ router.get("/", (req, res) => {
   });
   res.redirect(url);
 });
-
-
-
 
 router.get("/callback", async (req, res) => {
   try {
@@ -61,7 +56,6 @@ router.get("/callback", async (req, res) => {
       expiresIn: "7d",
     });
 
-    
     res.redirect(`${frontendUrl}/home?token=${token}`);
   } catch (err) {
     console.error("Google auth failed:", err);

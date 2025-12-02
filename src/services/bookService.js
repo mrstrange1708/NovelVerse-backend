@@ -1,6 +1,4 @@
-const { PrismaClient } = require("../generated/prisma");
-
-const prisma = new PrismaClient();
+const prisma = require("../lib/prisma");
 
 class BookService {
   _handleDatabaseError(error, operation = "database operation") {
@@ -41,7 +39,19 @@ class BookService {
         limit = 50,
         sortBy = "createdAt",
         sortOrder = "desc",
+        paginateByCategory = false,
+        categoriesPerPage = 3,
       } = filters;
+
+      // If paginateByCategory is true, return categories with books
+      if (paginateByCategory && !category && !search) {
+        return await this.getBooksGroupedByCategory({
+          page: parseInt(page),
+          categoriesPerPage: parseInt(categoriesPerPage),
+          language,
+          isFeatured,
+        });
+      }
 
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const take = parseInt(limit);
@@ -62,9 +72,9 @@ class BookService {
 
       if (search && search.trim()) {
         where.OR = [
-          { title: { contains: search.trim(), mode: "insensitive" } },
-          { author: { contains: search.trim(), mode: "insensitive" } },
-          { description: { contains: search.trim(), mode: "insensitive" } },
+          { title: { contains: search.trim() } },
+          { author: { contains: search.trim() } },
+          { description: { contains: search.trim() } },
         ];
       }
 
@@ -111,7 +121,7 @@ class BookService {
             isFeatured: true,
             createdAt: true,
             _count: {
-              select: { userBooks: true },
+              select: { UserBooks: true },
             },
           },
           orderBy,
@@ -131,6 +141,93 @@ class BookService {
       };
     } catch (error) {
       this._handleDatabaseError(error, "fetching books");
+    }
+  }
+
+  async getBooksGroupedByCategory(options = {}) {
+    try {
+      const { page = 1, categoriesPerPage = 3, language, isFeatured } = options;
+
+      const where = {};
+
+      if (language) {
+        where.language = language;
+      }
+
+      if (isFeatured !== undefined) {
+        where.isFeatured = isFeatured === "true" || isFeatured === true;
+      }
+
+      // Get all distinct categories
+      const allBooks = await prisma.books.findMany({
+        where,
+        select: { category: true },
+        distinct: ["category"],
+        orderBy: { category: "asc" },
+      });
+
+      const categories = allBooks.map((book) => book.category);
+      const totalCategories = categories.length;
+      const totalPages = Math.ceil(totalCategories / categoriesPerPage);
+
+      // Get categories for current page
+      const skip = (page - 1) * categoriesPerPage;
+      const currentPageCategories = categories.slice(
+        skip,
+        skip + categoriesPerPage
+      );
+
+      // Fetch books for each category
+      const categoryGroups = await Promise.all(
+        currentPageCategories.map(async (category) => {
+          const books = await prisma.books.findMany({
+            where: {
+              ...where,
+              category,
+            },
+            select: {
+              id: true,
+              title: true,
+              author: true,
+              category: true,
+              coverImage: true,
+              language: true,
+              pageCount: true,
+              slug: true,
+              manifestUrl: true,
+              processed: true,
+              description: true,
+              publishedAt: true,
+              isFeatured: true,
+              createdAt: true,
+              _count: {
+                select: { UserBooks: true },
+              },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 20, // Limit books per category
+          });
+
+          return {
+            category,
+            books,
+            count: books.length,
+          };
+        })
+      );
+
+      return {
+        success: true,
+        categoryGroups,
+        pagination: {
+          total: totalCategories,
+          page: parseInt(page),
+          limit: categoriesPerPage,
+          totalPages,
+        },
+      };
+    } catch (error) {
+      this._handleDatabaseError(error, "fetching books by category");
     }
   }
 
@@ -368,8 +465,8 @@ class BookService {
       const book = await prisma.books.findUnique({
         where: { slug },
         include: {
-          User: true,
-          _count: { select: { User: true } },
+          UserBooks: true,
+          _count: { select: { UserBooks: true } },
         },
       });
 

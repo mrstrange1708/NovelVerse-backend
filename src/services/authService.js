@@ -1,9 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("../generated/prisma");
+const prisma = require("../lib/prisma");
 const PasswordValidator = require("password-validator");
-
-const prisma = new PrismaClient();
 
 const passwordSchema = new PasswordValidator();
 passwordSchema
@@ -77,7 +75,6 @@ class AuthService {
     });
 
     if (!user) throw new Error("User not found");
-
 
     const [continueReading, completedBooks, streak] = await Promise.all([
       readingService.getContinueReading(userId, 5),
